@@ -3,13 +3,16 @@ pipeline {
     stages {
         stage('Build Application') {
             steps {
-                sh 'mvn -f java-tomcat-sample/pom.xml clean package'
+                cmd_exec 'mvn -f java-tomcat-sample/pom.xml clean package'
             }
             post {
                 success {
                     echo "Now Archiving the Artifacts...."
                     archiveArtifacts artifacts: '**/*.war'
                 }
+            }
+            def cmd_exec(command) {
+                return bat(returnStdout: true, script: "${command}").trim()
             }
         }
         stage('Deploy in Staging Environment'){
